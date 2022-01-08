@@ -26,9 +26,9 @@ class GradientReversalFunction(Function):
 
 
 # Define model
-class DECRec(nn.Module):
+class SER(nn.Module):
     def __init__(self):
-        super(DECRec, self).__init__()
+        super(SER, self).__init__()
         # Num of CNN filter, CNN filter size 5x100
         self.filters_num = 100
         self.kernel_size = 5
@@ -441,7 +441,7 @@ def pre_processing(s_data, s_dict, t_data, t_dict, w_embed, valid_idx):
 
 # Validation & Inference
 def valid(v_data, t_data, t_dict, w_embed, save, write_file):
-    model = DECRec()
+    model = SER()
     model.load_state_dict(torch.load(save, map_location=device))
     model.to(device)
     model.eval()
@@ -520,7 +520,7 @@ def learning(s_data, s_dict, t_data, t_dict, w_embed, save, idx):
     # Model
     print('Start Training ... \n')
     enc_loss_ratio, domain_loss_ratio = 0.05, 0.1
-    model = DECRec()
+    model = SER()
     # After 1 epoch, load trained parameters
     if idx == 1:
         model.load_state_dict(torch.load(save, map_location=device))
