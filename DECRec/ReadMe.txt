@@ -8,13 +8,13 @@
         # We substitute Baby.json > Musical_Instruments.json
         # Musical_Instruments.json, Pation_Lawn_and_Garden.json
 
-    # DECRec.py
+    # SER.py
         # Main file, load the files below
 
-    # DECRec_Process_Data.py
+    # SER_Process_Data.py
         # Pre-process source & target domain data
 
-    # DECRec_Module.py
+    # SER_Module.py
         # Training & Inference with PyTorch
 
 # Execution
@@ -22,7 +22,7 @@
         # https://nlp.stanford.edu/data/glove.6B.zip
         # Unzipped file name should be './glove.6B.100d.txt'
     # Training / Test with following code
-    # python DECRec.py
+    # python SER.py
 
 # Performance
     # The RMSE of validation / testing score will be updated at Performance_Baby_plus_Pation_Lawn_and_Garden.txt
