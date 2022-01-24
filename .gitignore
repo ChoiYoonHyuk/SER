@@ -3,6 +3,7 @@ temp/
 env/
 data/
 runs/
+resources/glove.6B/
 
 .vscode/
 logs/

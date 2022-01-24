@@ -101,7 +101,7 @@ def read_dataset(s_path, t_path):
           (len(t_train), len(t_valid), len(t_test)))
 
     # Dictionary for word embedding
-    f = open('./glove.6B.100d.txt')
+    f = open('./resources/glove.6B/glove.6B.100d.txt')
 
     for line in f:
         word_vector = line.split()
