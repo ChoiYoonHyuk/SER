@@ -1,5 +1,5 @@
-from SER_Process_Data import read_dataset
-from SER_Module import learning, valid
+from preprocess import read_dataset
+from model import learning, valid
 
 
 if __name__ == '__main__':

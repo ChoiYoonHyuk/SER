@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 ```bash
 
-python3 ./main.py  # Training / Test with following code
+python3 ./SER/main.py  # Training / Test with following code
 ```
 
 ### Experiments
