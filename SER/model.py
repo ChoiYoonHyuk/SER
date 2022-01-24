@@ -150,8 +150,10 @@ class SER(nn.Module):
         s_cls_out = self.s_classifier(s_ans_fea)
 
         # Output is [Source | Target] --> Masking target output for loss calculation
-        masking = torch.cat([torch.ones(batch_size), torch.zeros(batch_size)]).view(batch_size * 2, -1).to(device)
-        s_ans_out, s_label = torch.mul(s_cls_out, masking), torch.mul(label, masking)
+        masking = torch.cat([torch.ones(batch_size), torch.zeros(batch_size)]).view(
+            batch_size * 2, -1).to(device)
+        s_ans_out, s_label = torch.mul(
+            s_cls_out, masking), torch.mul(label, masking)
 
         # Source aggregated reviews FE
         s_u_fea = self.s_user_feature_extractor(user).squeeze(2).squeeze(2)
@@ -172,7 +174,8 @@ class SER(nn.Module):
         s_out = torch.mul(s_cls_out, masking)
 
         # Distance between individual review & aggregated review
-        s_dist = self.dist(torch.mul(s_ans_fea, masking), torch.mul(s_fea, masking))
+        s_dist = self.dist(torch.mul(s_ans_fea, masking),
+                           torch.mul(s_fea, masking))
 
         # Same for target domain
         t_u_ans_fea = self.t_user_feature_extractor(ans).squeeze(2).squeeze(2)
@@ -187,8 +190,10 @@ class SER(nn.Module):
 
         t_cls_out = self.t_classifier(t_ans_fea)
 
-        masking = torch.cat([torch.zeros(batch_size), torch.ones(batch_size)]).view(batch_size * 2, -1).to(device)
-        t_ans_out, t_label = torch.mul(t_cls_out, masking), torch.mul(label, masking)
+        masking = torch.cat([torch.zeros(batch_size), torch.ones(batch_size)]).view(
+            batch_size * 2, -1).to(device)
+        t_ans_out, t_label = torch.mul(
+            t_cls_out, masking), torch.mul(label, masking)
 
         # Target classification loss
         t_u_fea = self.t_user_feature_extractor(user).squeeze(2).squeeze(2)
@@ -207,7 +212,8 @@ class SER(nn.Module):
         t_cls_out = self.t_classifier(t_fea)
         t_out = torch.mul(t_cls_out, masking)
 
-        t_dist = self.dist(torch.mul(t_ans_fea, masking), torch.mul(t_fea, masking))
+        t_dist = self.dist(torch.mul(t_ans_fea, masking),
+                           torch.mul(t_fea, masking))
 
         # Discriminator label
         s_domain_specific = torch.zeros(batch_size).to(device)
@@ -217,13 +223,16 @@ class SER(nn.Module):
         s_c_d_fea = torch.cat((s_c_u_fea, s_c_i_fea), 1)
         s_c_d_fea = GradientReversalFunction.apply(s_c_d_fea)
         s_c_d_fea = self.discriminator(s_c_d_fea).squeeze(1)[0:batch_size]
-        s_c_domain_loss = F.binary_cross_entropy_with_logits(s_c_d_fea, s_domain_specific)
+        s_c_domain_loss = F.binary_cross_entropy_with_logits(
+            s_c_d_fea, s_domain_specific)
 
         # Common target discriminator loss
         t_c_d_fea = torch.cat((t_c_u_fea, t_c_i_fea), 1)
         t_c_d_fea = GradientReversalFunction.apply(t_c_d_fea)
-        t_c_d_fea = self.discriminator(t_c_d_fea).squeeze(1)[batch_size:batch_size * 2]
-        t_c_domain_loss = F.binary_cross_entropy_with_logits(t_c_d_fea, t_domain_specific)
+        t_c_d_fea = self.discriminator(t_c_d_fea).squeeze(1)[
+            batch_size:batch_size * 2]
+        t_c_domain_loss = F.binary_cross_entropy_with_logits(
+            t_c_d_fea, t_domain_specific)
 
         domain_common_loss = (s_c_domain_loss + t_c_domain_loss) / 2
 
@@ -233,12 +242,15 @@ class SER(nn.Module):
 
         # Target specific discriminator loss
         t_d_fea = torch.cat((t_u_fea, t_i_fea), 1)
-        t_d_fea = self.discriminator(t_d_fea).squeeze(1)[batch_size:batch_size * 2]
+        t_d_fea = self.discriminator(t_d_fea).squeeze(1)[
+            batch_size:batch_size * 2]
 
         s_domain_specific = torch.zeros(batch_size).to(device)
-        s_domain_loss = F.binary_cross_entropy_with_logits(s_d_fea, s_domain_specific)
+        s_domain_loss = F.binary_cross_entropy_with_logits(
+            s_d_fea, s_domain_specific)
         t_domain_specific = torch.ones(batch_size).to(device)
-        t_domain_loss = F.binary_cross_entropy_with_logits(t_d_fea, t_domain_specific)
+        t_domain_loss = F.binary_cross_entropy_with_logits(
+            t_d_fea, t_domain_specific)
         domain_specific_loss = (s_domain_loss + t_domain_loss) / 2
 
         return s_ans_out, s_out, s_label, s_dist, t_ans_out, t_out, t_label, t_dist, domain_common_loss, domain_specific_loss
@@ -348,9 +360,12 @@ def pre_processing(s_data, s_dict, t_data, t_dict, w_embed, valid_idx):
         label.append([rat])
 
     if valid_idx:
-        u_embed = torch.tensor(u_embed, requires_grad=True).view(batch_size, 1, 500, 100).to(device)
-        i_embed = torch.tensor(i_embed, requires_grad=True).view(batch_size, 1, 500, 100).to(device)
-        ans_embed = torch.tensor(ans_embed, requires_grad=True).view(batch_size, 1, 500, 100).to(device)
+        u_embed = torch.tensor(u_embed, requires_grad=True).view(
+            batch_size, 1, 500, 100).to(device)
+        i_embed = torch.tensor(i_embed, requires_grad=True).view(
+            batch_size, 1, 500, 100).to(device)
+        ans_embed = torch.tensor(ans_embed, requires_grad=True).view(
+            batch_size, 1, 500, 100).to(device)
         label = torch.FloatTensor(label).to(device)
 
         return u_embed, i_embed, ans_embed, label
@@ -431,9 +446,12 @@ def pre_processing(s_data, s_dict, t_data, t_dict, w_embed, valid_idx):
         ans_embed.append(ans_rev)
         label.append([rat])
 
-    u_embed = torch.tensor(u_embed, requires_grad=True).view(batch_size * 2, 1, 500, 100).to(device)
-    i_embed = torch.tensor(i_embed, requires_grad=True).view(batch_size * 2, 1, 500, 100).to(device)
-    ans_embed = torch.tensor(ans_embed, requires_grad=True).view(batch_size * 2, 1, 500, 100).to(device)
+    u_embed = torch.tensor(u_embed, requires_grad=True).view(
+        batch_size * 2, 1, 500, 100).to(device)
+    i_embed = torch.tensor(i_embed, requires_grad=True).view(
+        batch_size * 2, 1, 500, 100).to(device)
+    ans_embed = torch.tensor(ans_embed, requires_grad=True).view(
+        batch_size * 2, 1, 500, 100).to(device)
     label = torch.FloatTensor(label).to(device)
 
     return u_embed, i_embed, ans_embed, label
@@ -456,13 +474,15 @@ def valid(v_data, t_data, t_dict, w_embed, save, write_file):
     c_user_feature_extractor = model.c_user_feature_extractor
     c_item_feature_extractor = model.c_item_feature_extractor
 
-    v_batch = DataLoader(v_data, batch_size=batch_size, shuffle=True, num_workers=2)
+    v_batch = DataLoader(v_data, batch_size=batch_size,
+                         shuffle=True, num_workers=2)
     v_loss, idx = 0, 0
 
     for v_data in tqdm(v_batch, leave=False):
         if len(v_data[0]) != batch_size:
             continue
-        u_embed, i_embed, ans_embed, label = pre_processing(v_data, t_dict, v_data, t_dict, w_embed, 1)
+        u_embed, i_embed, ans_embed, label = pre_processing(
+            v_data, t_dict, v_data, t_dict, w_embed, 1)
 
         with torch.no_grad():
             # Target rating encoder
@@ -482,13 +502,15 @@ def valid(v_data, t_data, t_dict, w_embed, save, write_file):
         idx += 1
     v_loss = v_loss / idx
 
-    t_batch = DataLoader(t_data, batch_size=batch_size, shuffle=True, num_workers=2)
+    t_batch = DataLoader(t_data, batch_size=batch_size,
+                         shuffle=True, num_workers=2)
     t_loss, idx = 0, 0
 
     for t_data in tqdm(t_batch, leave=False):
         if len(t_data[0]) != batch_size:
             continue
-        u_embed, i_embed, ans_embed, label = pre_processing(t_data, t_dict, t_data, t_dict, w_embed, 1)
+        u_embed, i_embed, ans_embed, label = pre_processing(
+            t_data, t_dict, t_data, t_dict, w_embed, 1)
 
         with torch.no_grad():
             # Target rating encoder
@@ -533,10 +555,13 @@ def learning(s_data, s_dict, t_data, t_dict, w_embed, save, idx):
 
     # Make batch
     batch_size = 32
-    s_batch = DataLoader(s_data, batch_size=batch_size, shuffle=True, num_workers=2)
-    t_batch = DataLoader(t_data, batch_size=batch_size, shuffle=True, num_workers=2)
+    s_batch = DataLoader(s_data, batch_size=batch_size,
+                         shuffle=True, num_workers=2)
+    t_batch = DataLoader(t_data, batch_size=batch_size,
+                         shuffle=True, num_workers=2)
 
-    batch_data, zip_size = zip(s_batch, t_batch), min(len(s_batch), len(t_batch))
+    batch_data, zip_size = zip(s_batch, t_batch), min(
+        len(s_batch), len(t_batch))
 
     for source_x, target_x in tqdm(batch_data, leave=False, total=zip_size):
         # Pre processing
@@ -544,24 +569,29 @@ def learning(s_data, s_dict, t_data, t_dict, w_embed, save, idx):
             continue
 
         # Get embedding of user and item reviews
-        u_embed, i_embed, ans_embed, label = pre_processing(source_x, s_dict, target_x, t_dict, w_embed, 0)
+        u_embed, i_embed, ans_embed, label = pre_processing(
+            source_x, s_dict, target_x, t_dict, w_embed, 0)
 
         s_ans_out, s_out, s_label, s_dist, t_ans_out, t_out, t_label, t_dist, \
-        c_domain_loss, domain_loss = model(u_embed, i_embed, ans_embed, label)
+            c_domain_loss, domain_loss = model(
+                u_embed, i_embed, ans_embed, label)
 
         # Loss
-        s_ans_loss, s_loss = criterion(s_ans_out, s_label) * 2, criterion(s_out, s_label) * 2
-        t_ans_loss, t_loss = criterion(t_ans_out, t_label) * 2, criterion(t_out, t_label) * 2
+        s_ans_loss, s_loss = criterion(
+            s_ans_out, s_label) * 2, criterion(s_out, s_label) * 2
+        t_ans_loss, t_loss = criterion(
+            t_ans_out, t_label) * 2, criterion(t_out, t_label) * 2
 
         # Train
         loss_func = (s_loss + t_loss + s_ans_loss + t_ans_loss) / 2 + \
-                    (s_dist + t_dist) * enc_loss_ratio + (c_domain_loss + domain_loss) * domain_loss_ratio
+                    (s_dist + t_dist) * enc_loss_ratio + \
+            (c_domain_loss + domain_loss) * domain_loss_ratio
 
         optim.zero_grad()
         loss_func.backward()
         optim.step()
 
         torch.save(model.state_dict(), save)
-              
+
         print('Prediction Loss / Encoder Loss / Domain Loss: %.2f %.2f %.2f %.2f %.2f %.2f' %
               (s_loss, t_loss, s_dist, t_dist, c_domain_loss, domain_loss))

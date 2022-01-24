@@ -4,8 +4,8 @@ from SER_Module import learning, valid
 
 if __name__ == '__main__':
     # Define paths for source & target domain
-    source_path = './Musical_Instruments.json'
-    target_path = './Patio_Lawn_and_Garden.json'
+    source_path = './resources/Musical_Instruments.json'
+    target_path = './resources/Patio_Lawn_and_Garden.json'
 
     iteration = 300
 
@@ -15,7 +15,8 @@ if __name__ == '__main__':
     save = './' + path + '.pth'
     write_file = './Performance_' + path + '.txt'
 
-    s_data, s_dict, t_train, t_valid, t_test, t_dict, w_embed = read_dataset(source_path, target_path)
+    s_data, s_dict, t_train, t_valid, t_test, t_dict, w_embed = read_dataset(
+        source_path, target_path)
 
     for i in range(iteration):
         # After 1 epoch of training -> load trained parameter

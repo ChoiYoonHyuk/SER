@@ -16,7 +16,8 @@ def read_dataset(s_path, t_path):
     # Read source data and generate user & item's review dict
     while True:
         line = f.readline()
-        if not line: break
+        if not line:
+            break
 
         # Convert str to json format
         line = json.loads(line)
@@ -48,7 +49,8 @@ def read_dataset(s_path, t_path):
     while True:
         len_t_data += 1
         line = f.readline()
-        if not line: break
+        if not line:
+            break
 
     len_train_data = int(len_t_data * 0.8)
     len_t_data = int(len_t_data * 0.2)
@@ -58,7 +60,8 @@ def read_dataset(s_path, t_path):
     f = open(t_path, 'r')
     while True:
         line = f.readline()
-        if not line: break
+        if not line:
+            break
 
         line = json.loads(line)
 
@@ -91,9 +94,11 @@ def read_dataset(s_path, t_path):
     f.close()
 
     # Split valid / test data
-    t_test, t_valid = t_valid[int(len_t_data/2):len_t_data], t_valid[0:int(len_t_data/2)]
+    t_test, t_valid = t_valid[int(
+        len_t_data/2):len_t_data], t_valid[0:int(len_t_data/2)]
 
-    print('Size of Train / Valid / Test data  : %d / %d / %d' % (len(t_train), len(t_valid), len(t_test)))
+    print('Size of Train / Valid / Test data  : %d / %d / %d' %
+          (len(t_train), len(t_valid), len(t_test)))
 
     # Dictionary for word embedding
     f = open('./glove.6B.100d.txt')
@@ -107,4 +112,3 @@ def read_dataset(s_path, t_path):
     f.close()
 
     return s_data, s_dict, t_train, t_valid, t_test, t_dict, w_embed
-
