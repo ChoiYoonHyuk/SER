@@ -1,32 +1,53 @@
-First, let us assume the parameters of source and target regressor as $\theta_{s,reg},\theta_{t,reg}$.
-Through Equation \ref{mse_loss}, for each domain, we can simply update the parameters of regression layer $\theta_{reg}^d$ with proper learning rate $\mu$ as follows (see purple triangles in Figure \ref{model}):
-\begin{equation}
-\begin{split}
-\theta_{d,reg}^* = \theta_{d,reg}-\mu {\partial \mathcal{L}_{d,reg} \over \partial \theta_{d,reg}}
-\end{split}
-\end{equation}
-
-Using chain rules, we can define the losses for the update of two encoding networks $\theta_{d,enc}$ as follows:
-
-\begin{equation}
-\begin{gathered}
-\theta_{d,enc}^* = \theta_{d,enc} - \mu(\beta {\partial\mathcal{L}_{d,enc} \over \partial\theta_{d,enc}} + {\partial\mathcal{L}_{d,reg} \over \partial\theta_{d,reg}}{\partial\theta_{d,reg} \over \partial\theta_{d,enc}})
-\end{gathered}
-\end{equation}
-, where $\mathcal{L}_{d,enc} = ||E_d-I_d||_2^2$ (blue circles in Figure \ref{model}).
-
-Through Equation \ref{da_loss}, the parameter of domain discriminator $\theta_{dom}$ can be updated as follows (red squares in Figure \ref{model}):
-\begin{equation}
-\begin{gathered}
-\theta_{dom}^* = \theta_{dom} - \mu{\partial \mathcal{L}_{dom} \over \partial\theta_{dom}}
-\end{gathered}
-\end{equation}
-
-Finally, we can define the update functions for three FEs $\,\theta_{src,fe}$, $\theta_{com,fe}$, $\theta_{trg,fe}$ integrating three types of back-propagated losses:
-\begin{equation}
-\begin{gathered}
-\theta_{src,fe}^* = \theta_{src,fe} - \mu\left\{\alpha{\partial( \mathcal{L}_{s,dom}^{src} + \mathcal{L}_{s,dom}^{com}) \over \partial\theta_{dom}}{\partial\theta_{dom} \over \partial\theta_{src,fe}} + \right. \\ \left. \beta( {\partial\mathcal{L}_{s,enc} \over \partial\theta_{s,enc}}{\partial\theta_{s,enc} \over \partial\theta_{src,fe}} + {\partial\mathcal{L}_{s,reg} \over \partial\theta_{s,reg}}{\partial\theta_{s,reg} \over \partial\theta_{s,enc}}{\partial\theta_{s,enc} \over \partial\theta_{src,fe}})\right\}, \\
-\theta_{com,fe}^* = \theta_{com,fe} - \mu\left\{ \alpha{\partial(\mathcal{L}_{s,dom}^{src} - \mathcal{L}_{s,dom}^{com} + \mathcal{L}_{t,dom}^{trg} - \mathcal{L}_{t,dom}^{com}) \over \partial\theta_{dom}}{\partial\theta_{dom} \over \partial\theta_{com,fe}} \right. \\  + \left. \beta\left({\mathcal{L}_{s,enc} \over \partial\theta_{s,enc}}{\partial\theta_{s,enc} \over \partial\theta_{com,fe}} +  {\mathcal{L}_{t,enc} \over \partial\theta_{t,enc}}{\partial\theta_{t,enc} \over \partial\theta_{com,fe}}\right) \right. \\  + \left. {\partial\mathcal{L}_{s,reg} \over \partial\theta_{s,reg}}{\partial\theta_{s,reg} \over \partial\theta_{s,enc}}{\partial\theta_{s,enc} \over \partial\theta_{com,fe}} + {\partial\mathcal{L}_{t,reg} \over \partial\theta_{t,reg}}{\partial\theta_{t,reg} \over \partial\theta_{t,enc}}{\partial\theta_{t,enc} \over \partial\theta_{com,fe}} \right\},\\
-%\theta_{trg,fe}^* = \theta_{trg,fe} - \mu\left\{\alpha{\partial( \mathcal{L}_{t,dom}^{trg} + \mathcal{L}_{t,dom}^{com}) \over \partial\theta_{dom}}{\partial\theta_{dom} \over \partial\theta_{trg,fe}} + \right. \\ \left. \beta( {\partial\mathcal{L}_{t,enc} \over \partial\theta_{t,enc}}{\partial\theta_{t,enc} \over \partial\theta_{trg,fe}} + {\partial\mathcal{L}_{t,reg} \over \partial\theta_{t,reg}}{\partial\theta_{t,reg} \over \partial\theta_{t,enc}}{\partial\theta_{t,enc} \over \partial\theta_{trg,fe}})\right\}
-\end{gathered}
-\end{equation}
+First, let us assume the parameters of source and target re-
+gressor as P s
+r , P t
+r , respectively. The loss function associated
+with the update of P d
+r (d denotes domain) is a direct classifi-
+cation error, Ld
+pred. Here, we can define the loss for P s
+r and
+P t
+r as follows:
+Ls
+r = Ls
+pred = 1
+Ns
+∑
+u,i∈Ds
+(̂ ys,O
+u,i − ys
+u,i)2,
+Lt
+r = Lt
+pred = 1
+Nt
+∑
+u,i∈Dt
+(̂yt,O
+u,i − yt
+u,i)2
+Then, for each domain, we can derive the loss function for
+the update of siamese encoder P d
+e as below:
+Ls
+e = Ls
+pred + βLs
+encoder ,
+Lt
+e = Lt
+pred + βLt
+encoder
+, where Ld
+encoder = ||Ed
+u,i − Id
+u,i||2
+2.
+The parameter of domain discriminator Pd is updated
+with the average of domain-invariant Ls,com
+d , Lt,com
+d and
+domain-specific Ls,spe
+d , Lt,spe
+d losses, which can be defined
+as
