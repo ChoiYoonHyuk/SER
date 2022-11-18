@@ -1,4 +1,4 @@
-## Selective Adversarial Training with Encoding Network for Review-Based Cross-Domain Recommendation
+## Review-Based Domain Disentanglement without Duplicate Users or Contexts for Cross-Domain Recommendation
 
 ### Project Structure
 
